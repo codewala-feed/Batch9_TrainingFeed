@@ -270,4 +270,276 @@ DELETE FROM departments WHERE did = 2;
 
 ---
 
+# SELECT, DISTINCT, WHERE, EXPRESSION, AS, INSERT, UPDATE, DELETE, 
+
+---
+
+## 📘 Table: `students`
+
+```sql
+CREATE TABLE students (
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    city VARCHAR(50),
+    age INT
+);
+```
+
+### ✅ Insert Records
+
+```sql
+INSERT INTO students (id, name, city, age) VALUES
+(1, 'Akhil', 'Delhi', 21),
+(2, 'Priya', 'Mumbai', 22),
+(3, 'Nikhil', 'Delhi', 23),
+(4, 'Akhil', 'Delhi', 21),
+(5, 'Sara', 'Mumbai', 22),
+(6, 'Priya', 'Bangalore', 22),
+(7, 'Akhil', 'Delhi', 28);
+```
+
+
+### 🔍 SELECT Queries
+
+```sql
+SELECT * FROM students;
+```
+
+| id | name   | city      | age |
+| -- | ------ | --------- | --- |
+| 1  | Akhil  | Delhi     | 21  |
+| 2  | Priya  | Mumbai    | 22  |
+| 3  | Nikhil | Delhi     | 23  |
+| 4  | Akhil  | Delhi     | 21  |
+| 5  | Sara   | Mumbai    | 22  |
+| 6  | Priya  | Bangalore | 22  |
+| 7  | Akhil  | Delhi     | 28  |
+
+```sql
+SELECT DISTINCT * FROM students;
+```
+
+| id | name   | city      | age |
+| -- | ------ | --------- | --- |
+| 1  | Akhil  | Delhi     | 21  |
+| 2  | Priya  | Mumbai    | 22  |
+| 3  | Nikhil | Delhi     | 23  |
+| 4  | Akhil  | Delhi     | 21  |
+| 5  | Sara   | Mumbai    | 22  |
+| 6  | Priya  | Bangalore | 22  |
+| 7  | Akhil  | Delhi     | 28  |
+
+```sql
+SELECT name FROM students;
+```
+
+| name   |
+| ------ |
+| Akhil  |
+| Priya  |
+| Nikhil |
+| Akhil  |
+| Sara   |
+| Priya  |
+| Akhil  |
+
+```sql
+SELECT DISTINCT name FROM students;
+```
+
+| name   |
+| ------ |
+| Akhil  |
+| Priya  |
+| Nikhil |
+| Sara   |
+
+```sql
+SELECT name, age FROM students;
+```
+
+| name   | age |
+| ------ | --- |
+| Akhil  | 21  |
+| Priya  | 22  |
+| Nikhil | 23  |
+| Akhil  | 21  |
+| Sara   | 22  |
+| Priya  | 22  |
+| Akhil  | 28  |
+
+```sql
+SELECT DISTINCT name, age FROM students;
+```
+
+| name   | age |
+| ------ | --- |
+| Akhil  | 21  |
+| Priya  | 22  |
+| Nikhil | 23  |
+| Sara   | 22  |
+| Akhil  | 28  |
+
+```sql
+SELECT name, city FROM students;
+```
+
+| name   | city      |
+| ------ | --------- |
+| Akhil  | Delhi     |
+| Priya  | Mumbai    |
+| Nikhil | Delhi     |
+| Akhil  | Delhi     |
+| Sara   | Mumbai    |
+| Priya  | Bangalore |
+| Akhil  | Delhi     |
+
+```sql
+SELECT DISTINCT name, city FROM students;
+```
+
+| name   | city      |
+| ------ | --------- |
+| Akhil  | Delhi     |
+| Priya  | Mumbai    |
+| Nikhil | Delhi     |
+| Sara   | Mumbai    |
+| Priya  | Bangalore |
+
+---
+
+### 🔢 Expressions in SELECT
+
+```sql
+SELECT age + 5 FROM students;
+```
+
+| age + 5 |
+| ------- |
+| 26      |
+| 27      |
+| 28      |
+| 26      |
+| 27      |
+| 27      |
+| 33      |
+
+```sql
+SELECT age + 5 AS futureAge FROM students;
+```
+
+| futureAge |
+| --------- |
+| 26        |
+| 27        |
+| 28        |
+| 26        |
+| 27        |
+| 27        |
+| 33        |
+
+```sql
+SELECT 100 * 2;
+```
+
+| ?column? |
+| -------- |
+| 200      |
+
+```sql
+SELECT 100 * 2 AS result;
+```
+
+| result |
+| ------ |
+| 200    |
+
+```
+
+---
+
+```
+
+
+## 📘 Table: `users`
+
+```sql
+CREATE TABLE users (
+    id INT PRIMARY KEY,
+    name VARCHAR(40) NOT NULL,
+    age INT NOT NULL
+);
+```
+
+### ✅ Insert Records
+
+```sql
+INSERT INTO users (id, name) VALUES (1, 'akhil'); -- ❌ ERROR: age is NOT NULL
+INSERT INTO users (id, name, age) VALUES 
+(2, 'priya', 23),
+(3, 'kanth', 24);
+INSERT INTO users VALUES (4, 'nikhil', 25);
+INSERT INTO users (id, age) VALUES (5, 26); -- ❌ ERROR: name is NOT NULL
+INSERT INTO users (id, name) VALUES (6, 'sudha'); -- ❌ ERROR: age is NOT NULL
+```
+
+### 📋 Table Data Example
+
+| id | name   | age |
+|----|--------|-----|
+| 2  | priya  | 23  |
+| 3  | kanth  | 24  |
+| 4  | nikhil | 25  |
+
+---
+
+## ✏️ UPDATE Operations
+
+```sql
+UPDATE users SET age = 25 WHERE name = 'akhil';
+UPDATE users SET age = 18 WHERE age < 25;
+UPDATE users SET age = 25;
+```
+
+### 🧾 Output (after full update)
+
+| id | name   | age |
+|----|--------|-----|
+| 2  | priya  | 25  |
+| 3  | kanth  | 25  |
+| 4  | nikhil | 25  |
+
+---
+
+## ❌ DELETE Operations
+
+```sql
+DELETE FROM users WHERE age = 0;
+DELETE FROM users WHERE id > 3;
+DELETE FROM users;
+```
+
+### 🧾 Output (after deletions)
+
+```sql
+SELECT * FROM users;
+-- Empty result set (0 rows)
+```
+
+---
+
+## ✅ Summary
+
+- Use `DISTINCT` to remove duplicate results.
+- `WHERE` filters records based on specific conditions.
+- `EXPRESSION` computes values using columns, literals, functions, or operators.
+- `AS` renames columns or tables for readability or convenience.
+  
+- `INSERT` must respect NOT NULL constraints.
+- `UPDATE` can conditionally or fully modify records.
+- `DELETE` can target specific rows or remove all records.
+
+
+---
+
 
