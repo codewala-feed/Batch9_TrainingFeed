@@ -543,3 +543,194 @@ SELECT * FROM users;
 ---
 
 
+# 🛡️ DATA CONTROL LANGUAGE
+
+## 🧑‍💻 Listing Existing Users
+
+```sql
+SELECT user FROM mysql.user;
+````
+
+**✅ Sample Output:**
+
+| user |
+| ---- |
+| root |
+
+---
+
+## 🔑 Login as Root User
+
+```bash
+mysql -u root -pPassword#123
+```
+
+---
+
+## 👤 Create New Users(Login as root)
+
+```sql
+CREATE USER 'akhil'@'localhost' IDENTIFIED BY 'Akhil#123';
+CREATE USER 'shini'@'localhost' IDENTIFIED BY 'Shini#123';
+CREATE USER 'nikhil'@'localhost' IDENTIFIED BY 'Nikhil#123';
+```
+
+✅ After creation, list again:
+
+```sql
+SELECT user FROM mysql.user;
+```
+
+**✅ Sample Output:**
+
+| user   |
+| ------ |
+| root   |
+| akhil  |
+| shini  |
+| nikhil |
+
+---
+
+### 🔐 sample Login as akhil
+
+```bash
+mysql -u akhil -pAkhil#123
+```
+
+---
+---
+
+### 🔐 sample Login as shini
+
+```bash
+mysql -u shini -pShini#123
+```
+
+---
+
+## 🟢 Grant Privileges(Login as root)
+
+### Grant SHOW DATABASES
+
+
+```sql
+GRANT SHOW DATABASES ON *.* TO 'nikhil'@'localhost';
+```
+
+✅ Try listing databases:(Login as nikhil)
+
+```sql
+SHOW DATABASES;
+```
+
+**✅ Works fine.**
+
+---
+
+## 🔴 Revoke Privileges (Login as root)
+
+### Revoke SHOW DATABASES
+
+```sql
+REVOKE SHOW DATABASES ON *.* FROM 'nikhil'@'localhost';
+```
+
+✅ Try again:(Login as nikhil)
+
+```sql
+SHOW DATABASES;
+```
+
+**❌ works but limited databases will be shown:**
+
+```
+only default databases will be shown
+```
+
+✅ This shows privilege was revoked.
+
+---
+
+## 🟢 Grant SELECT Privilege (Login as root)
+
+```sql
+GRANT SELECT ON war.* TO 'nikhil'@'localhost';
+```
+
+✅ Nikhil can now:(Login as nikhil)
+
+```sql
+USE war;
+```
+
+**✅ Works fine.**
+
+---
+
+## 🔴 Revoke SELECT Privilege(Login as root)
+
+```sql
+REVOKE SELECT ON war.* FROM 'nikhil'@'localhost';
+```
+
+✅ Try again:(Login as nikhil)
+
+```sql
+USE war;
+```
+
+**❌ Error Example:**
+
+```
+ERROR 1044 (42000): Access denied for user 'nikhil'@'localhost' to database 'war'
+```
+
+---
+
+## 🟢 Grant INSERT Privilege(Login as root)
+
+```sql
+GRANT INSERT ON war.* TO 'akhil'@'localhost';
+```
+
+✅ Akhil can insert:
+
+```sql
+INSERT INTO users VALUES (1, 'nikhil', 23);
+```
+
+**✅ Works fine.**
+
+---
+
+## 🔴 🔒 Revoke INSERT Privilege(Login as root)
+
+```sql
+REVOKE INSERT ON war.* FROM 'akhil'@'localhost';
+```
+
+✅ Try again:
+
+```sql
+INSERT INTO users VALUES (1, 'akhil', 23);
+```
+
+**❌ Error Example:**
+
+```
+ERROR 1142 (42000): INSERT command denied to user 'akhil'@'localhost' for table 'users'
+```
+
+---
+
+## ✅ Summary
+
+* `GRANT` provides specific permissions.
+* `REVOKE` removes those permissions.
+* Always test by switching users and re-issuing commands.
+* Use `SHOW GRANTS FOR 'USER'@'HOST';` to inspect granted permissions.
+
+---
+
+
