@@ -733,4 +733,194 @@ ERROR 1142 (42000): INSERT command denied to user 'akhil'@'localhost' for table 
 
 ---
 
+# Transaction Control Language (TCL)
+
+---
+
+**🟢 CREATE DATABASE AND TABLE**
+
+```sql
+CREATE DATABASE bank;
+USE bank;
+
+CREATE TABLE accounts (
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    amount DECIMAL(10,2)
+);
+```
+
+---
+
+**🟢 INSERT INITIAL DATA**
+
+```sql
+INSERT INTO accounts VALUES (1, 'akhil', 1000.00);
+INSERT INTO accounts VALUES (2, 'nikhil', 500.00);
+```
+
+---
+
+**🟢 VERIFY TABLE DATA**
+
+```sql
+SELECT * FROM accounts;
+```
+
+Sample Output:
+
+| id | name   | amount |
+|----|--------|--------|
+| 1  | akhil  | 1000.00 |
+| 2  | nikhil | 500.00 |
+
+
+---
+
+**🟢 CHECK AUTOCOMMIT**
+
+```sql
+SELECT @@autocommit;
+```
+
+If it returns `1`, it means autocommit is ON.
+
+---
+
+**🟢 DISABLE AUTOCOMMIT**
+
+```sql
+SET autocommit=0;
+```
+
+---
+
+**🟢 START TRANSACTION (ALTERNATIVE)**
+
+Instead of `SET autocommit=0;` you can also start transaction explicitly:
+
+```sql
+START TRANSACTION;
+```
+
+or
+
+```sql
+BEGIN;
+```
+
+This will start a transaction block.
+
+---
+
+**🟢 SAVEPOINT 1 - ADD SHINI**
+
+```sql
+INSERT INTO accounts VALUES (3, 'shini', 500.00);
+SAVEPOINT sp1;
+```
+
+---
+
+**🟢 SAVEPOINT 2 - TRANSFER 200 FROM AKHIL TO NIKHIL**
+
+```sql
+UPDATE accounts SET amount = amount - 200 WHERE name = 'akhil';
+UPDATE accounts SET amount = amount + 200 WHERE name = 'nikhil';
+SAVEPOINT sp2;
+```
+
+---
+
+**🟢 SAVEPOINT 3 - ADD HARSHA**
+
+```sql
+INSERT INTO accounts VALUES (4, 'harsha', 400.00);
+SAVEPOINT sp3;
+```
+
+---
+
+**🟢 SAVEPOINT 4 - UPDATE NAME TO HARSHA IN CAPS**
+
+```sql
+UPDATE accounts SET name = 'HARSHA' WHERE name = 'harsha';
+SAVEPOINT sp4;
+```
+
+---
+
+**🟢 ROLLBACK TO SAVEPOINT 3**
+
+```sql
+ROLLBACK TO sp3;
+```
+
+Effect:
+
+* Name remains `harsha` in lowercase(original).
+
+---
+
+**🟢 ROLLBACK TO SAVEPOINT 1**
+
+```sql
+ROLLBACK TO sp1;
+```
+
+Effect:
+
+* Transfer of 200 from AKHIL to NIKHIL will be undone.
+* "harsha" removed.
+
+---
+
+**🟢 FULL ROLLBACK**
+
+```sql
+ROLLBACK;
+```
+
+Effect:
+
+* All uncommitted changes discarded.
+* Table back to:
+
+| id | name   | amount |
+| -- | ------ | ------ |
+| 1  | akhil  | 1000.00 |
+| 2  | nikhil | 500.00 |
+
+---
+
+**🟢 COMMIT CHANGES**
+
+If you want to keep all uncommitted changes:
+
+```sql
+COMMIT;
+```
+
+---
+
+**🟢 SELECT FINAL DATA**
+
+```sql
+SELECT * FROM accounts;
+```
+
+---
+
+**✅ QUICK NOTES**
+
+* Use `START TRANSACTION;` or `BEGIN;` to start transaction.
+* `SAVEPOINT` marks points you can roll back to.
+* `ROLLBACK TO spX;` undoes only after that savepoint.
+* `ROLLBACK;` undoes everything uncommitted.
+* `COMMIT;` saves everything permanently.
+
+---
+
+
+
 
