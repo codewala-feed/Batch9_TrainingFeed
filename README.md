@@ -922,5 +922,234 @@ SELECT * FROM accounts;
 ---
 
 
+Perfect—let’s organize this **clearly** with headings, sample outputs, and a **short list of examples only (not every single task)** so it’s easier to paste in your notes.
+
+---
+
+## 🎯 MySQL Practice Notes
+
+---
+
+### 🟢 DATABASE & TABLE CREATION
+
+```sql
+CREATE DATABASE IF NOT EXISTS temp;
+USE temp;
+
+DROP TABLE IF EXISTS products;
+
+CREATE TABLE products (
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    category VARCHAR(50),
+    price DECIMAL(10,2),
+    qty INT
+);
+```
+
+---
+
+### 🟢 INSERT SAMPLE DATA
+
+```sql
+INSERT INTO products (id, name, category, price, qty) VALUES
+(1, 'Pen', 'Stationery', 10.00, 5),
+(2, 'Pencil', 'Stationery', 5.00, 10),
+(3, 'Notebook', 'Stationery', 25.00, 7),
+(4, 'Eraser', 'Stationery', 3.00, 15),
+(5, 'Marker', 'Stationery', 15.00, 8),
+(6, 'Stapler', 'Office Supplies', 50.00, 2);
+```
+
+✅ **Sample Data**
+
+| id | name     | category        | price | qty |
+| -- | -------- | --------------- | ----- | --- |
+| 1  | Pen      | Stationery      | 10.00 | 5   |
+| 2  | Pencil   | Stationery      | 5.00  | 10  |
+| 3  | Notebook | Stationery      | 25.00 | 7   |
+| 4  | Eraser   | Stationery      | 3.00  | 15  |
+| 5  | Marker   | Stationery      | 15.00 | 8   |
+| 6  | Stapler  | Office Supplies | 50.00 | 2   |
+
+---
+
+## ⚙️ OPERATORS IN MYSQL
+
+MySQL has several categories of operators:
+
+---
+
+### 🟢 1️⃣ Arithmetic Operators
+
+Used for calculations.
+
+| Operator | Meaning        |
+| -------- | -------------- |
+| `+`      | Addition       |
+| `-`      | Subtraction    |
+| `*`      | Multiplication |
+| `/`      | Division       |
+
+**Example: Calculate Total Value**
+
+```sql
+SELECT name, price, qty, price * qty AS total_value FROM products;
+```
+
+✅ **Sample Output**
+
+| name     | price | qty | total\_value |
+| -------- | ----- | --- | ------------ |
+| Pen      | 10.00 | 5   | 50.00        |
+| Pencil   | 5.00  | 10  | 50.00        |
+| Notebook | 25.00 | 7   | 175.00       |
+
+---
+
+### 🟢 2️⃣ Relational Operators 
+(`=` `!=`) can also be called as `comparision` operators
+
+Used to compare values.
+
+| Operator | Meaning                  |
+| -------- | ------------------------ |
+| `=`      | Equal to                 |
+| `!=`     | Not equal to             |
+| `<`      | Less than                |
+| `>`      | Greater than             |
+| `<=`     | Less than or equal to    |
+| `>=`     | Greater than or equal to |
+
+**Example: Products costing more than 20**
+
+```sql
+SELECT * FROM products WHERE price > 20;
+```
+
+✅ **Sample Output**
+
+| id | name     | category        | price | qty |
+| -- | -------- | --------------- | ----- | --- |
+| 3  | Notebook | Stationery      | 25.00 | 7   |
+| 6  | Stapler  | Office Supplies | 50.00 | 2   |
+
+---
+
+### 🟢 3️⃣ Logical Operators
+
+Combine multiple conditions.
+
+| Operator | Meaning             |
+| -------- | ------------------- |
+| `AND`    | All conditions true |
+| `OR`     | At least one true   |
+| `NOT`    | Negates a condition |
+
+**Example: Stationery items with qty > 5**
+
+```sql
+SELECT * FROM products WHERE category='Stationery' AND qty > 5;
+```
+
+✅ **Sample Output**
+
+| id | name     | category   | price | qty |
+| -- | -------- | ---------- | ----- | --- |
+| 2  | Pencil   | Stationery | 5.00  | 10  |
+| 3  | Notebook | Stationery | 25.00 | 7   |
+| 4  | Eraser   | Stationery | 3.00  | 15  |
+| 5  | Marker   | Stationery | 15.00 | 8   |
+
+---
+
+### 🟢 4️⃣ Special Operators
+
+These are commonly used for filtering patterns, sets, nulls, and ranges.
+
+---
+
+**🔹 IN / NOT IN**
+
+Check if a value is in a set.
+
+**Example: Orders with status in 'Delivered', 'Pending'**
+
+```sql
+SELECT * FROM orders WHERE status IN ('Delivered', 'Pending');
+```
+
+---
+
+**🔹 IS / IS NOT**
+
+Check for NULLs.
+
+**Example: Orders where status is NULL**
+
+```sql
+SELECT * FROM orders WHERE status IS NULL;
+```
+
+✅ **Sample Output**
+
+| id | user  | product     | qty | order\_date | status |
+| -- | ----- | ----------- | --- | ----------- | ------ |
+| 6  | Fiona | Scissors    | 2   | 2025-07-06  | NULL   |
+| 10 | Julia | File Folder | 1   | 2025-07-10  | NULL   |
+
+---
+
+**🔹 LIKE / NOT LIKE**
+
+Pattern matching.
+
+| Symbol | Meaning                  |
+| ------ | ------------------------ |
+| `%`    | Any number of characters |
+| `_`    | A single character       |
+
+**Example: Users starting with 'A'**
+
+```sql
+SELECT * FROM orders WHERE user LIKE 'A%';
+```
+
+✅ **Sample Output**
+
+| id | user  | product | qty | order\_date | status    |
+| -- | ----- | ------- | --- | ----------- | --------- |
+| 1  | Alice | Pen     | 5   | 2025-07-01  | Delivered |
+
+---
+
+**🔹 BETWEEN / NOT BETWEEN**
+
+Range filtering (inclusive).
+
+**Example: Orders with quantity between 2 and 5**
+
+```sql
+SELECT * FROM orders WHERE qty BETWEEN 2 AND 5;
+```
+
+✅ **Sample Output**
+
+| id | user   | product  | qty | order\_date | status    |
+| -- | ------ | -------- | --- | ----------- | --------- |
+| 2  | Bob    | Notebook | 2   | 2025-07-02  | Pending   |
+| 4  | Daisy  | Eraser   | 3   | 2025-07-04  | Cancelled |
+| 8  | Hannah | Tape     | 4   | 2025-07-08  | Delivered |
+
+---
+
+✅ **Tip:** You can combine all these operators with `AND`, `OR`, and parentheses to build complex queries.
+
+---
+
+
+
+
+
 
 
