@@ -1148,14 +1148,9 @@ SELECT * FROM orders WHERE qty BETWEEN 2 AND 5;
 ---
 
 
-
-
-Great—let’s **organize all of this cleanly**, with example queries and explanations per topic.
-Below is everything **structured by topic**:
-
 ---
 
-## 🟢 1️⃣ Table Setup
+## Table Setup
 
 ```sql
 USE temp;
@@ -1197,7 +1192,7 @@ INSERT INTO users (id, name, amount) VALUES (10, 'Back\\Slash', 175.50);
 
 ---
 
-## 🟢 2️⃣ String Functions
+## String Functions
 
 ---
 
@@ -1305,7 +1300,7 @@ SELECT COUNT(*) AS user_count FROM users;
 
 ---
 
-## 🟢 4️⃣ Escape Characters in LIKE
+## Escape Characters in LIKE
 
 Escape characters help when the search pattern includes special symbols (%, \_, ).
 
@@ -1364,7 +1359,6 @@ SELECT * FROM users WHERE name LIKE '%^\\%' ESCAPE '^';
 
 ---
 
-Let me know if you’d like me to generate more examples!
 
 
 
