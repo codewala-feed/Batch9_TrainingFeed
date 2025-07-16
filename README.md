@@ -1360,5 +1360,168 @@ SELECT * FROM users WHERE name LIKE '%^\\%' ESCAPE '^';
 ---
 
 
+---
+
+# Table Setup
+
+```sql
+USE temp;
+
+DROP TABLE IF EXISTS employees;
+
+CREATE TABLE employees (
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    department VARCHAR(50),
+    age INT,
+    salary DECIMAL(10, 2)
+);
+
+INSERT INTO employees (id, name, department, age, salary) VALUES
+(1, 'Alice', 'HR', 24, 23000.00),
+(2, 'Bob', 'HR', 30, 29000.00),
+(3, 'Charlie', 'HR', 15, 14000.00),
+(4, 'David', 'IT', 19, 18000.00),
+(5, 'Eve', 'IT', 22, 21000.00),
+(6, 'Frank', 'IT', 35, 34000.00),
+(7, 'Grace', 'IT', 27, 26000.00),
+(8, 'Hannah', 'Sales', 18, 17000.00),
+(9, 'Ivy', 'Sales', 25, 24000.00),
+(10, 'Jack', 'Sales', 40, 39000.00),
+(11, 'Karen', 'Sales', 19, 18000.00),
+(12, 'Leo', 'Marketing', 14, 13000.00),
+(13, 'Mona', 'Marketing', 20, 19000.00),
+(14, 'Nina', 'Marketing', 30, 29000.00),
+(15, 'Oscar', 'Marketing', 23, 22000.00);
+```
+
+---
+
+# GROUP BY
+
+**Purpose:**
+Group records by column value and perform aggregate calculations.
+
+✅ Example 1: Count employees per department
+
+```sql
+SELECT department, COUNT(*) 
+FROM employees 
+GROUP BY department;
+```
+
+✅ Example 2: Count employees per age
+
+```sql
+SELECT age, COUNT(*) 
+FROM employees 
+GROUP BY age;
+```
+
+---
+
+# WHERE
+
+**Purpose:**
+Filter individual rows **before grouping**.
+
+✅ Example: Count only HR employees
+
+```sql
+SELECT department, COUNT(*) 
+FROM employees 
+WHERE department = 'HR' 
+GROUP BY department;
+```
+
+✅ Example: List employees older than 18
+
+```sql
+SELECT * 
+FROM employees 
+WHERE age > 18;
+```
+
+---
+
+# HAVING
+
+**Purpose:**
+Filter aggregated results **after GROUP BY**.
+
+✅ Example: Departments where total salary exceeds 95,000
+
+```sql
+SELECT department, SUM(salary) AS total_salary
+FROM employees
+GROUP BY department
+HAVING SUM(salary) > 95000;
+```
+
+---
+
+# WHERE vs HAVING
+
+**WHERE:**
+
+* Filters **individual rows** before grouping.
+* Example:
+
+  ```sql
+  SELECT * FROM employees WHERE age > 18;
+  ```
+
+**HAVING:**
+
+* Filters **groups** after aggregation.
+* Example:
+
+  ```sql
+  SELECT department, SUM(salary)
+  FROM employees
+  GROUP BY department
+  HAVING SUM(salary) > 95000;
+  ```
+
+---
+
+# CASE
+
+**Purpose:**
+Create custom labels or computed columns based on conditions.
+
+✅ Example 1: Categorize employees by age using ranges
+
+```sql
+SELECT *,
+CASE
+    WHEN age <= 18 THEN 'KID'
+    WHEN age >= 18 AND age <= 25 THEN 'MAN'
+    ELSE 'OLD'
+END AS Category
+FROM employees;
+```
+
+✅ Example 2: Using BETWEEN
+
+```sql
+SELECT *,
+CASE
+    WHEN age <= 18 THEN 'KID'
+    WHEN age BETWEEN 18 AND 25 THEN 'MAN'
+    ELSE 'OLD'
+END AS Category
+FROM employees;
+```
+
+---
+
+✅ **Summary of Clauses**
+
+* `GROUP BY`: groups rows by column
+* `WHERE`: filters rows before grouping
+* `HAVING`: filters groups after aggregation
+* `CASE`: adds computed columns dynamically
+
 
 
