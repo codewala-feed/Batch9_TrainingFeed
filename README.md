@@ -1150,6 +1150,221 @@ SELECT * FROM orders WHERE qty BETWEEN 2 AND 5;
 
 
 
+Great—let’s **organize all of this cleanly**, with example queries and explanations per topic.
+Below is everything **structured by topic**:
+
+---
+
+## 🟢 1️⃣ Table Setup
+
+```sql
+USE temp;
+
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    amount DECIMAL(10, 2)
+);
+
+INSERT INTO users (id, name, amount) VALUES (1, 'john', 100.00);
+INSERT INTO users (id, name, amount) VALUES (2, 'ALICE', 200.50);
+INSERT INTO users (id, name, amount) VALUES (3, 'Bob_Smith', 150.25);
+INSERT INTO users (id, name, amount) VALUES (4, 'Anna%Marie', 80.00);
+INSERT INTO users (id, name, amount) VALUES (5, 'cHaRlie', 300.00);
+INSERT INTO users (id, name, amount) VALUES (6, 'O''Connor', 120.00);
+INSERT INTO users (id, name, amount) VALUES (7, 'Zoë', 250.75);
+INSERT INTO users (id, name, amount) VALUES (8, 'MARCUS', 0.00);
+INSERT INTO users (id, name, amount) VALUES (9, 'eve', 99.99);
+INSERT INTO users (id, name, amount) VALUES (10, 'Back\\Slash', 175.50);
+```
+
+✅ **Sample Data Example**
+
+| id | name       | amount |
+| -- | ---------- | ------ |
+| 1  | john       | 100.00 |
+| 2  | ALICE      | 200.50 |
+| 3  | Bob\_Smith | 150.25 |
+| 4  | Anna%Marie | 80.00  |
+| 5  | cHaRlie    | 300.00 |
+| 6  | O'Connor   | 120.00 |
+| 7  | Zoë        | 250.75 |
+| 8  | MARCUS     | 0.00   |
+| 9  | eve        | 99.99  |
+| 10 | Back\Slash | 175.50 |
+
+---
+
+## 🟢 2️⃣ String Functions
+
+---
+
+### 🔹 LENGTH
+
+**Get the length of each name:**
+
+```sql
+SELECT id, name, LENGTH(name) AS name_length FROM users;
+```
+
+---
+
+### 🔹 UPPER
+
+**Convert names to uppercase:**
+
+```sql
+SELECT id, UPPER(name) AS name_upper FROM users;
+```
+
+---
+
+### 🔹 LOWER
+
+**Convert names to lowercase:**
+
+```sql
+SELECT id, LOWER(name) AS name_lower FROM users;
+```
+
+---
+
+### 🔹 CONCAT
+
+**Concatenate name and amount:**
+
+```sql
+SELECT CONCAT(name, ' has $', amount) AS info FROM users;
+```
+
+---
+
+### 🔹 REPLACE
+
+**Replace underscores with spaces in names:**
+
+```sql
+SELECT name, REPLACE(name, '_', ' ') AS cleaned_name FROM users;
+```
+
+---
+
+## 🟢 3️⃣ Aggregate Functions
+
+---
+
+### 🔹 MAX
+
+**Highest amount:**
+
+```sql
+SELECT MAX(amount) AS max_amount FROM users;
+```
+
+---
+
+### 🔹 MIN
+
+**Lowest amount:**
+
+```sql
+SELECT MIN(amount) AS min_amount FROM users;
+```
+
+---
+
+### 🔹 SUM
+
+**Total of all amounts:**
+
+```sql
+SELECT SUM(amount) AS total_amount FROM users;
+```
+
+---
+
+### 🔹 AVG
+
+**Average amount:**
+
+```sql
+SELECT AVG(amount) AS avg_amount FROM users;
+```
+
+---
+
+### 🔹 COUNT
+
+**Number of users:**
+
+```sql
+SELECT COUNT(*) AS user_count FROM users;
+```
+
+---
+
+## 🟢 4️⃣ Escape Characters in LIKE
+
+Escape characters help when the search pattern includes special symbols (%, \_, ).
+
+---
+
+✅ **Escape Backslash (`\`):**
+Find names containing a literal backslash:
+
+```sql
+SELECT * FROM users WHERE name LIKE '%\\%' ESCAPE '\\';
+```
+
+---
+
+✅ **Escape Percent (`%`) with `$`:**
+Find names containing literal `%` character:
+
+```sql
+SELECT * FROM users WHERE name LIKE '%$%%' ESCAPE '$';
+```
+
+*This matches `Anna%Marie`.*
+
+---
+
+✅ **Escape Underscore (`_`) with `!`:**
+Find names containing literal `_` character:
+
+```sql
+SELECT * FROM users WHERE name LIKE '%!_%' ESCAPE '!';
+```
+
+*This matches `Bob_Smith`.*
+
+---
+
+✅ **Escape Backslash with `^`:**
+Find names containing backslash, using `^` as escape:
+
+```sql
+SELECT * FROM users WHERE name LIKE '%^\\%' ESCAPE '^';
+```
+
+*This matches `Back\Slash`.*
+
+---
+
+
+✅ **General Tip:**
+
+* `%` = any sequence of characters
+* `_` = any single character
+* ESCAPE defines what character signals a literal
+* If you see `Anna%Marie`, you must escape `%`
+* If you see `Back\Slash`, you must escape `\`
+
+---
+
+Let me know if you’d like me to generate more examples!
 
 
 
