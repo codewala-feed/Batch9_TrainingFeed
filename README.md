@@ -1525,3 +1525,478 @@ FROM employees;
 
 
 
+---
+
+## 🔹 **Sub Query**
+
+*Use a query inside another to filter or compare data.*
+
+---
+
+### ▶️ `in`, `=` — *Compare values to results from a subquery*
+
+#### 📌 Query 1:
+
+```sql
+SELECT * FROM employees WHERE salary = (
+	SELECT MAX(salary) FROM employees
+);
+```
+
+#### ✅ Output:
+
+| id | name | department | age | salary  |
+| -- | ---- | ---------- | --- | ------- |
+| 10 | Jack | Sales      | 40  | 39000.0 |
+
+---
+
+#### 📌 Query 2:
+
+```sql
+SELECT * FROM employees WHERE salary IN (
+	SELECT MAX(salary) FROM employees GROUP BY department
+);
+```
+
+#### ✅ Output:
+
+| id | name  | department | age | salary  |
+| -- | ----- | ---------- | --- | ------- |
+| 2  | Bob   | HR         | 30  | 29000.0 |
+| 6  | Frank | IT         | 35  | 34000.0 |
+| 10 | Jack  | Sales      | 40  | 39000.0 |
+| 14 | Nina  | Marketing  | 30  | 29000.0 |
+
+---
+
+### ▶️ `all`, `any` — *Compare value with all or any of the subquery results*
+
+#### 📌 Query 3:
+
+```sql
+SELECT * FROM employees WHERE salary > ALL (
+	SELECT MIN(salary) FROM employees GROUP BY department
+);
+```
+
+#### ✅ Output:
+
+| id | name  | department | age | salary  |
+| -- | ----- | ---------- | --- | ------- |
+| 2  | Bob   | HR         | 30  | 29000.0 |
+| 6  | Frank | IT         | 35  | 34000.0 |
+| 7  | Grace | IT         | 27  | 26000.0 |
+| 9  | Ivy   | Sales      | 25  | 24000.0 |
+| 10 | Jack  | Sales      | 40  | 39000.0 |
+| 14 | Nina  | Marketing  | 30  | 29000.0 |
+| 15 | Oscar | Marketing  | 23  | 22000.0 |
+
+---
+
+#### 📌 Query 4:
+
+```sql
+SELECT * FROM employees WHERE salary > ANY (
+	SELECT MIN(salary) FROM employees GROUP BY department
+);
+```
+
+#### ✅ Output:
+
+| id | name   | department | age | salary  |
+| -- | ------ | ---------- | --- | ------- |
+| 1  | Alice  | HR         | 24  | 23000.0 |
+| 2  | Bob    | HR         | 30  | 29000.0 |
+| 4  | David  | IT         | 19  | 18000.0 |
+| 5  | Eve    | IT         | 22  | 21000.0 |
+| 6  | Frank  | IT         | 35  | 34000.0 |
+| 7  | Grace  | IT         | 27  | 26000.0 |
+| 8  | Hannah | Sales      | 18  | 17000.0 |
+| 9  | Ivy    | Sales      | 25  | 24000.0 |
+| 10 | Jack   | Sales      | 40  | 39000.0 |
+| 11 | Karen  | Sales      | 19  | 18000.0 |
+| 13 | Mona   | Marketing  | 20  | 19000.0 |
+| 14 | Nina   | Marketing  | 30  | 29000.0 |
+| 15 | Oscar  | Marketing  | 23  | 22000.0 |
+
+---
+
+### ▶️ `exists`, `not exists` — *Check for existence of rows that meet a condition*
+
+#### 📌 Query 5:
+
+```sql
+SELECT * FROM employees e1 WHERE EXISTS (
+	SELECT department FROM employees e2
+	WHERE e1.department = e2.department
+	GROUP BY department
+	HAVING COUNT(*) > 3
+);
+```
+
+✅ Departments with more than 3 employees: IT, Sales, Marketing
+✅ Output:
+
+| id | name   | department | age | salary  |
+| -- | ------ | ---------- | --- | ------- |
+| 4  | David  | IT         | 19  | 18000.0 |
+| 5  | Eve    | IT         | 22  | 21000.0 |
+| 6  | Frank  | IT         | 35  | 34000.0 |
+| 7  | Grace  | IT         | 27  | 26000.0 |
+| 8  | Hannah | Sales      | 18  | 17000.0 |
+| 9  | Ivy    | Sales      | 25  | 24000.0 |
+| 10 | Jack   | Sales      | 40  | 39000.0 |
+| 11 | Karen  | Sales      | 19  | 18000.0 |
+| 12 | Leo    | Marketing  | 14  | 13000.0 |
+| 13 | Mona   | Marketing  | 20  | 19000.0 |
+| 14 | Nina   | Marketing  | 30  | 29000.0 |
+| 15 | Oscar  | Marketing  | 23  | 22000.0 |
+
+---
+
+#### 📌 Query 6:
+
+```sql
+SELECT * FROM employees e1 WHERE NOT EXISTS (
+	SELECT department FROM employees e2
+	WHERE e1.department = e2.department
+	GROUP BY department
+	HAVING COUNT(*) > 3
+);
+```
+
+✅ Departments with ≤ 3 employees: HR
+✅ Output:
+
+| id | name    | department | age | salary  |
+| -- | ------- | ---------- | --- | ------- |
+| 1  | Alice   | HR         | 24  | 23000.0 |
+| 2  | Bob     | HR         | 30  | 29000.0 |
+| 3  | Charlie | HR         | 15  | 14000.0 |
+
+---
+
+## 🔹 **Nested SubQuery**
+
+*Use multiple subquery levels to dig deeper.*
+
+---
+
+### ▶️ Nth Highest Salary — *Find the 3rd highest salary*
+
+#### 📌 Query 7:
+
+```sql
+SELECT MAX(salary) FROM employees WHERE salary < (
+	SELECT MAX(salary) FROM employees WHERE salary < (
+		SELECT MAX(salary) FROM employees
+	)
+);
+```
+
+#### ✅ Output:
+
+| max(salary) |
+| ----------- |
+| 29000.0     |
+
+---
+
+## 🔹 **ORDER BY**
+
+*Sort the result rows in ascending or descending order.*
+
+#### 📌 Ascending:
+
+```sql
+SELECT * FROM employees ORDER BY salary;
+```
+
+#### 📌 Descending:
+
+```sql
+SELECT * FROM employees ORDER BY salary DESC;
+```
+
+---
+
+## 🔹 **LIMIT**
+
+*Restrict the number of rows returned.*
+
+#### 📌 Top 5 highest salaries:
+
+```sql
+SELECT * FROM employees ORDER BY salary DESC LIMIT 5;
+```
+
+#### ✅ Output:
+
+| id | name  | department | age | salary  |
+| -- | ----- | ---------- | --- | ------- |
+| 10 | Jack  | Sales      | 40  | 39000.0 |
+| 6  | Frank | IT         | 35  | 34000.0 |
+| 2  | Bob   | HR         | 30  | 29000.0 |
+| 14 | Nina  | Marketing  | 30  | 29000.0 |
+| 7  | Grace | IT         | 27  | 26000.0 |
+
+---
+
+
+---
+
+## 🔹 **Joins**
+
+*Combine rows from two tables based on related columns.*
+
+---
+
+### ▶️ **INNER JOIN** — *Returns only rows where the join condition matches in both tables.*
+
+#### 📌 Query:
+
+```sql
+SELECT * FROM users JOIN departments
+ON users.d_id = departments.d_id;
+```
+
+#### 📋 Tables:
+
+**users**
+
+| u\_id | name    | d\_id |
+| ----- | ------- | ----- |
+| 1     | Alice   | 1     |
+| 2     | Bob     | 1     |
+| 3     | Charlie | 2     |
+| 4     | David   | 2     |
+| 5     | Eve     | 3     |
+| 6     | Frank   | NULL  |
+
+**departments**
+
+| d\_id | name      |
+| ----- | --------- |
+| 1     | HR        |
+| 2     | IT        |
+| 3     | Sales     |
+| 4     | Marketing |
+
+#### ✅ Output:
+
+| u\_id | name    | d\_id | name  |
+| ----- | ------- | ----- | ----- |
+| 1     | Alice   | 1     | HR    |
+| 2     | Bob     | 1     | HR    |
+| 3     | Charlie | 2     | IT    |
+| 4     | David   | 2     | IT    |
+| 5     | Eve     | 3     | Sales |
+
+---
+
+### ▶️ **LEFT JOIN** — *Returns all rows from the left table, with matched data from the right table.*
+
+#### 📌 Query:
+
+```sql
+SELECT * FROM users LEFT JOIN departments
+ON users.d_id = departments.d_id;
+```
+
+#### ✅ Output:
+
+| u\_id | name    | d\_id | name  |
+| ----- | ------- | ----- | ----- |
+| 1     | Alice   | 1     | HR    |
+| 2     | Bob     | 1     | HR    |
+| 3     | Charlie | 2     | IT    |
+| 4     | David   | 2     | IT    |
+| 5     | Eve     | 3     | Sales |
+| 6     | Frank   | NULL  | NULL  |
+
+---
+
+#### 📌 Custom Column Query:
+
+```sql
+SELECT users.u_id, users.name, departments.name
+FROM users LEFT JOIN departments
+ON users.d_id = departments.d_id;
+```
+
+#### ✅ Output:
+
+| u\_id | name    | name  |
+| ----- | ------- | ----- |
+| 1     | Alice   | HR    |
+| 2     | Bob     | HR    |
+| 3     | Charlie | IT    |
+| 4     | David   | IT    |
+| 5     | Eve     | Sales |
+| 6     | Frank   | NULL  |
+
+---
+
+### ▶️ **RIGHT JOIN** — *Returns all rows from the right table, and matched rows from the left.*
+
+#### 📌 Query:
+
+```sql
+SELECT * FROM users RIGHT JOIN departments
+ON users.d_id = departments.d_id;
+```
+
+#### ✅ Output:
+
+| u\_id | name    | d\_id | name      |
+| ----- | ------- | ----- | --------- |
+| 1     | Alice   | 1     | HR        |
+| 2     | Bob     | 1     | HR        |
+| 3     | Charlie | 2     | IT        |
+| 4     | David   | 2     | IT        |
+| 5     | Eve     | 3     | Sales     |
+| NULL  | NULL    | 4     | Marketing |
+
+---
+
+#### 📌 Custom Column Query:
+
+```sql
+SELECT u.u_id, u.name, d.name
+FROM users u RIGHT JOIN departments d
+ON u.d_id = d.d_id;
+```
+
+#### ✅ Output:
+
+| u\_id | name    | name      |
+| ----- | ------- | --------- |
+| 1     | Alice   | HR        |
+| 2     | Bob     | HR        |
+| 3     | Charlie | IT        |
+| 4     | David   | IT        |
+| 5     | Eve     | Sales     |
+| NULL  | NULL    | Marketing |
+
+---
+
+### ▶️ **SELF JOIN** — *Join a table with itself using aliases.*
+
+#### 📌 Query:
+
+```sql
+SELECT * FROM employees2 emp LEFT JOIN employees2 mng
+ON emp.manager_id = mng.id;
+```
+
+> Since `employees2` is not defined in your tables, you'd need a structure like:
+
+**employees2**
+
+| id | name    | manager\_id |
+| -- | ------- | ----------- |
+| 1  | Alice   | NULL        |
+| 2  | Bob     | 1           |
+| 3  | Charlie | 1           |
+| 4  | David   | 2           |
+
+#### ✅ Output (Example):
+
+| emp.id | emp.name | manager\_id | mng.name |
+| ------ | -------- | ----------- | -------- |
+| 1      | Alice    | NULL        | NULL     |
+| 2      | Bob      | 1           | Alice    |
+| 3      | Charlie  | 1           | Alice    |
+| 4      | David    | 2           | Bob      |
+
+---
+
+### ▶️ **CROSS JOIN** — *Returns all possible row combinations (Cartesian product).*
+
+#### 📌 Query:
+
+```sql
+SELECT * FROM users CROSS JOIN departments;
+```
+
+#### ✅ Output (partial sample):
+
+> Since `users` has 6 rows and `departments` has 4 rows → Output = 6 × 4 = 24 rows
+
+| u\_id | user\_name | d\_id (user) | d\_id (dept) | dept\_name |
+| ----- | ---------- | ------------ | ------------ | ---------- |
+| 1     | Alice      | 1            | 1            | HR         |
+| 1     | Alice      | 1            | 2            | IT         |
+| 1     | Alice      | 1            | 3            | Sales      |
+| 1     | Alice      | 1            | 4            | Marketing  |
+| 2     | Bob        | 1            | 1            | HR         |
+| ...   | ...        | ...          | ...          | ...        |
+| 6     | Frank      | NULL         | 4            | Marketing  |
+
+---
+
+Great! Let’s move on to the final part of your SQL reference:
+
+---
+
+## 🔹 **Views**
+
+*A view is a virtual table based on a query result.*
+
+---
+
+### ▶️ **CREATE VIEW** — *Create a named virtual table from a SELECT query*
+
+#### 📌 Query:
+
+```sql
+CREATE VIEW hr_emp AS 
+SELECT * FROM employees WHERE department = 'HR';
+```
+
+✅ This creates a virtual table `hr_emp` with only HR employees.
+
+#### 🔍 Sample Output of `SELECT * FROM hr_emp`:
+
+| id | name    | department | age | salary  |
+| -- | ------- | ---------- | --- | ------- |
+| 1  | Alice   | HR         | 24  | 23000.0 |
+| 2  | Bob     | HR         | 30  | 29000.0 |
+| 3  | Charlie | HR         | 15  | 14000.0 |
+
+---
+
+### ▶️ **CREATE OR REPLACE VIEW** — *Create a view or replace it if it exists*
+
+#### 📌 Query:
+
+```sql
+CREATE OR REPLACE VIEW hr_emp AS 
+SELECT name, salary FROM employees WHERE department = 'HR';
+```
+
+✅ Now, `hr_emp` contains only `name` and `salary` of HR employees.
+
+#### 🔍 Output:
+
+| name    | salary  |
+| ------- | ------- |
+| Alice   | 23000.0 |
+| Bob     | 29000.0 |
+| Charlie | 14000.0 |
+
+---
+
+### ▶️ **DROP VIEW** — *Remove the view definition from the database*
+
+#### 📌 Query:
+
+```sql
+DROP VIEW hr_emp;
+```
+
+✅ This removes the `hr_emp` view from the database.
+
+---
+
